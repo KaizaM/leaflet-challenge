@@ -7,59 +7,57 @@ d3.json(url).then(function (data) {
 
 // general map code
 function map(earthquakes) {
-      var base_map = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      })
+  var base_map = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  })
     
-      var myMap = L.map("map", {
-        center: [
-          0.0, 0.0
-        ],
-        zoom: 3,
-        layers: [base_map, earthquakes]
-      });
+  var myMap = L.map("map", {
+    center: [
+    0.0, 0.0
+    ],
+  zoom: 3,
+  layers: [base_map, earthquakes]
+  });
     
-        legend.addTo(myMap);
+  legend.addTo(myMap);
 }
 
 // functions for earthquake data
 function bubbles(earthquakeData) {
-    function popup(feature, layer) {
-        layer.bindPopup("Magnitude: " + feature.properties.mag + "<br>Location: " + feature.properties.place);
-    }
+  function popup(feature, layer) {
+    layer.bindPopup("Earthquake Magnitude: " + feature.properties.mag + "<br>Location: " + feature.properties.place);
+  }
 
-    function circle(feature, latlng){
-        let options = {
-        radius:5*feature.properties.mag,
-        fillColor: color(feature.properties.mag),
-        color: color(feature.properties.mag)
-        } 
-        
-        return L.circleMarker(latlng,options);
-    }
+  function circle(feature, latlng){
+    let options = {
+      radius:5*feature.properties.mag,
+      color: color(feature.properties.mag)
+    }   
+    return L.circleMarker(latlng,options);
+  }
 
-    let earthquakes = L.geoJSON(earthquakeData, {
-        onEachFeature: popup,
-        pointToLayer: circle
-    });
+  let earthquakes = L.geoJSON(earthquakeData, {
+    onEachFeature: popup,
+    pointToLayer: circle
+  });
 
-    map(earthquakes);
+  map(earthquakes);
 }
 
 // color based off magnitude
 function color(magnitude){
-    switch(true){
-      case(magnitude <= 2):
+  switch(true){
+    case(magnitude <= 2):
       return "#00FF00";
-      case (magnitude <= 3):
-          return "#99FF99";
-      case (magnitude <= 4):
-          return "#FFB266";
-      case (magnitude <= 5):
-          return "#FF6666";
-      case (magnitude > 5):
-          return "#660000";
-    }
+    case (magnitude <= 3):
+      return "#99FF99";
+    case (magnitude <= 4):
+      return "#FFB266";
+    case (magnitude <= 5):
+      return "#FF6666";
+    case (magnitude > 5):
+      return "#660000";
+  }
 }
 
 // Creating Legend
@@ -69,7 +67,6 @@ var legend = L.control({
 
 legend.onAdd = function() {
   var div = L.DomUtil.create("div", "info legend");
- 
   var bins = [0,2,3,4,5];
 
   for (var i = 0; i < bins.length; i++) {
